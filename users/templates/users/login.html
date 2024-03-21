@@ -1,0 +1,18 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            <div>
+                <img class="img-fluid mx-auto d-block" src="https://belajar-online.ignatiusglobal.sch.id/pluginfile.php/1/core_admin/logo/0x200/1628479610/igs-logos.png" alt="">
+            </div>
+            {% csrf_token %}
+            <fieldset class="form-group">
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

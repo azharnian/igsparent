@@ -1,0 +1,27 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+<section class="content">
+    <div>
+        {% if student_reports %}
+        {% for report in student_reports %}
+            <p>
+                <article class="media content-section">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ report.student.user.first_name }} {{ report.student.user.last_name }}</a>
+                        <small class="text-muted">{{ report.date_created|date:"F d, Y" }}</small>
+                        </div>
+                        <h3><a class="article-title" href="#"> {{ report.report_type.report_type_title }} : {{ report.report_title }}</a></h2>
+                        <p class="article-content">Detail : {{ report.report_content }}</p>
+                        <p class="article-content bg-danger text-white"> <b>Tindak Lanjut :</b> {{ report.report_status.report_status_title }}</p>
+                    </div>
+                </article>
+            </p>
+        {% endfor %}
+        {% else %}
+            <h1 class="text-center">No Reports</h1>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}

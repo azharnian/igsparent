@@ -1,0 +1,44 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <div class="content-section">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">List of Reports</legend>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Filter Reports</button>
+                </div>
+            </form>
+        </div>
+        {% if reports %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.student.user.first_name }} {{ report.student.user.last_name }} - {{ report.student.cohort_name.cohort_name }}</td>
+                        <td>{{ report.report_title }}</td>
+                        <td>{{ report.date_created }}</td>
+                        <td>{{ report.report_status.report_status_title }}</td>
+                        <td><a class="bx-icon" href="#"><i class='bx bxs-edit-alt'></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+{% endblock content %}
