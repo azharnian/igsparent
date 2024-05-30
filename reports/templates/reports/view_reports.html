@@ -28,13 +28,23 @@
                 </thead>
                 <tbody>
                     {% for report in reports %}
+                    {% if report.is_approved %}
                     <tr>
                         <td>{{ report.student.user.first_name }} {{ report.student.user.last_name }} - {{ report.student.cohort_name.cohort_name }}</td>
                         <td>{{ report.report_title }}</td>
                         <td>{{ report.date_created }}</td>
-                        <td>{{ report.report_status.report_status_title }}</td>
-                        <td><a class="bx-icon" href="#"><i class='bx bxs-edit-alt'></i></a></td>
+                        <td class="bg-success text-white">{{ report.report_status.report_status_title }}</td>
+                        <td><a class="bx-icon" href="{% url 'reports-update' report.id %}"><i class='bx bxs-edit-alt'></i></a></td>
                     </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ report.student.user.first_name }} {{ report.student.user.last_name }} - {{ report.student.cohort_name.cohort_name }}</td>
+                        <td>{{ report.report_title }}</td>
+                        <td>{{ report.date_created }}</td>
+                        <td class="bg-warning text-white">{{ report.report_status.report_status_title }}</td>
+                        <td><a class="bx-icon" href="{% url 'reports-update' report.id %}"><i class='bx bxs-edit-alt'></i></a></td>
+                    </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

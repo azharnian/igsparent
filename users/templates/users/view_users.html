@@ -27,10 +27,14 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.first_name }} {{ user.last_name }}</td>
                         <td>
-                            <a class="bx-icon" href="#"><i class='bx bxs-edit-alt'></i></a>
+                            <a href="{% url 'users-detail' user.username %}">{{ user.username }}</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'users-detail' user.username %}">{{ user.first_name }} {{ user.last_name }}</a>
+                        </td>
+                        <td>
+                            <a class="bx-icon" href="{% url 'users-edit' user.username %}"><i class='bx bxs-edit-alt'></i></a>
                         </td>
                     </tr>
                     {% endfor %}

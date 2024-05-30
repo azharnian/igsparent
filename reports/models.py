@@ -36,8 +36,11 @@ class Report(models.Model):
     image = models.ImageField(default='default.jpg', upload_to='report_pics')
     date_created = models.DateTimeField(default=timezone.now)
     report_status = models.ForeignKey(ReportStatus, on_delete=models.CASCADE, related_name='report_status')
+    image_url = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
+    is_approved = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='report_creators')
+    approved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='report_approver', null=True)
 
     def __str__(self) -> str:
         return f'{self.student.user.first_name}-{self.report_title}'

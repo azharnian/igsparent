@@ -12,12 +12,11 @@
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>
-            {{ u_form|crispy }}
-            {{ p_form|crispy }}
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form|crispy }}
+          {{ p_form|crispy }}
         </fieldset>
         <div class="form-group">
-            <button class="btn btn-info" type="submit">Update</button>
             <a class="btn btn-outline-info" href="{% url 'reports-home' %}">Cancel</a>
         </div>
     </form>
@@ -25,6 +24,15 @@
       <small class="text-muted">
           Want To Change Your Password? <a class="ml-2" href="{% url 'users-password-change' %}">Change</a>
       </small>
-  </div>
     </div>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const formFields = document.querySelectorAll('form fieldset.form-group input, form fieldset.form-group select, form fieldset.form-group textarea');
+
+      formFields.forEach(field => {
+          field.disabled = true;
+      });
+  });
+  </script>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .decorators import is_parent, is_frontoffice, is_admin
+from .decorators import is_parent, is_frontoffice, is_admin, is_teacher
 from .models import Profile, Parent, Student
 
 
@@ -34,7 +34,7 @@ class CustomAuthenticationForm(AuthenticationForm):
                 code='inactive',
             )
         
-        if not is_admin(user) and not is_frontoffice(user) and not is_parent(user):
+        if not is_admin(user) and not is_frontoffice(user) and not is_parent(user) and not is_teacher(user):
             raise forms.ValidationError(
                 ("Your account is not available."),
                 code='unavailable',

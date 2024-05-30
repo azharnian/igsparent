@@ -1,0 +1,26 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ edit_user.profile.image.url }}">
+        <div class="media-body">
+          <small class="text-muted">Edit Profile</small>
+          <h2 class="text-secondary">{{ edit_user.first_name }} {{ edit_user.last_name }}</h2>
+          <p class="text-secondary">{{ edit_user.email }}</p>
+        </div>
+      </div>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Profile Info</legend>
+            {{ u_form|crispy }}
+            {{ p_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-info" type="submit">Update</button>
+            <a class="btn btn-outline-info" href="{% url 'reports-home' %}">Cancel</a>
+        </div>
+    </form>
+    </div>
+{% endblock content %}

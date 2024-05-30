@@ -1,0 +1,57 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ detail_user.profile.image.url }}">
+        <div class="media-body">
+          <small class="text-muted">Detail Profile</small>
+          <h2 class="text-secondary">{{ detail_user.first_name }} {{ detail_user.last_name }}</h2>
+          <p class="text-secondary">{{ detail_user.email }}</p>
+        </div>
+      </div>
+
+      {% if children %}
+      <div class="row d-flex justify-content-around">
+        <div class="col-12 mb-4">
+          <h3>Children</h3>
+          <hr>
+        </div>
+        {% for child in children %}
+        <div class="media col-12 p-4 bg-light d-flex align-items-center">
+            <img class="rounded-circle account-img" src="{{ child.profile.image.url }}">
+            <a class="text-secondary h3" href="{% url 'users-detail' child.profile.user.username %}">{{ child.first_name }} {{ child.last_name }} </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if reports %}
+      {% for report in reports %}
+      <p>
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                <small class="mr-2">{{ report.student.cohort_name.cohort_name }},</small>
+                <small class="text-muted">{{ report.date_created|date:"F d, Y" }} : </small>
+
+                <small>reported by {{ report.created_by.first_name }} {{ report.created_by.last_name }}</small>
+                </div>
+                <h3><a class="article-title" href="#"> {{ report.report_type.report_type_title }} : {{ report.report_title }}</a></h2>
+                <p class="article-content">Detail : {{ report.report_content }}</p>
+                <small>evidence <a href="{{ report.image_url }}" target="_blank">click here</a></small>
+                {% if report.is_approved %}
+                <p class="article-content bg-danger text-white"> <b>Tindak Lanjut :</b> {{ report.report_status.report_status_title }}</p>
+                {% else %}
+                <p class="article-content bg-secondary text-white"> <b>Tindak Lanjut :</b> {{ report.report_status.report_status_title }}</p>
+                <small>Not yet clarified by admin.</small>
+            
+                {% endif %}
+
+            </div>
+        </article>
+      </p>
+      {% endfor %}
+      {% endif %}
+    </div>
+{% endblock content %}

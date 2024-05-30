@@ -3,22 +3,63 @@
 {% block content %}
 <section class="content">
     <div>
+        {% if user.teacher.is_active %}
+            <p>
+                <article class="media content-section">
+                    <div class="media-body center d-flex justify-content-center flex-column">
+                        <h3 class="text-center">Welcome {{ user.first_name }} {{ user.last_name }}</h3>
+                        <a class="btn bg-steel text-white" href="{% url 'reports-create' %}">Create Report</a>
+                    </div>
+                </article>
+            </p> 
+        {% endif %}
         {% if student_reports %}
         {% for report in student_reports %}
             <p>
                 <article class="media content-section">
                     <div class="media-body">
                         <div class="article-metadata">
-                        <a class="mr-2" href="#">{{ report.student.user.first_name }} {{ report.student.user.last_name }}</a>
+                        <a class="mr-2" href="{% url 'users-detail' report.student.user.username %}">{{ report.student.user.first_name }} {{ report.student.user.last_name }} - {{ report.student.cohort_name.cohort_name }}</a>
                         <small class="text-muted">{{ report.date_created|date:"F d, Y" }}</small>
+
+                        <small>, reported by {{ report.created_by.first_name }} {{ report.created_by.last_name }}</small>
                         </div>
                         <h3><a class="article-title" href="#"> {{ report.report_type.report_type_title }} : {{ report.report_title }}</a></h2>
                         <p class="article-content">Detail : {{ report.report_content }}</p>
+                        <small>evidence <a href="{{ report.image_url }}" target="_blank">click here</a></small>
+                        {% if report.is_approved %}
                         <p class="article-content bg-danger text-white"> <b>Tindak Lanjut :</b> {{ report.report_status.report_status_title }}</p>
+                        {% else %}
+                        <p class="article-content bg-secondary text-white"> <b>Tindak Lanjut :</b> {{ report.report_status.report_status_title }}</p>
+                        <small>Not yet clarified by admin.</small>
+                        
+                            {% if user.frontoffice.is_active %}
+                                <hr>
+                                <a class="btn btn-info text-center d-block" href="{% url 'reports-update' report.id %}">Edit & Approve Report</a>
+                            {% endif %}
+                        {% endif %}
+
                     </div>
                 </article>
             </p>
         {% endfor %}
+        <div class="d-fel justify-content-center pagination mb-4">
+            <span class="step-links">
+                {% if student_reports.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ student_reports.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ student_reports.number }} of {{ student_reports.paginator.num_pages }}.
+                </span>
+        
+                {% if student_reports.has_next %}
+                    <a href="?page={{ student_reports.next_page_number }}">next</a>
+                    <a href="?page={{ student_reports.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
         {% else %}
             <h1 class="text-center">No Reports</h1>
         {% endif %}
