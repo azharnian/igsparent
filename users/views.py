@@ -1,3 +1,9 @@
+import os
+import csv
+
+from django.conf import settings
+from django.http import HttpResponse
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from users.models import Parent, Student
 from reports.models import Report
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, PasswordChangeForm, ParentRegisterForm, StudentRegisterForm, UserFilterForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, PasswordChangeForm, ParentRegisterForm, StudentRegisterForm, UserFilterForm, CSVUsersUploadForm
 from users.decorators import frontoffice_required, is_parent, is_student
 
 @login_required
@@ -23,6 +29,50 @@ def register(request):
             return redirect('users-register')
     form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
+@login_required
+@frontoffice_required
+def upload_users(request):
+
+    if request.method == 'POST':
+        form = CSVUsersUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+            try:
+                decoded_file = csv_file.read().decode('utf-8')
+                sniffer = csv.Sniffer()
+                dialect = sniffer.sniff(decoded_file)
+                decoded_file = decoded_file.splitlines()
+                reader = csv.DictReader(decoded_file, dialect=dialect)
+                
+                for index, row in enumerate(reader, start=1):
+                    try:
+                        form = UserRegisterForm({
+                            'username': row['username'],
+                            'first_name': row['first_name'],
+                            'last_name': row['last_name'],
+                            'email': row['email'],
+                            'password1': row['password'],
+                            'password2': row['password'],
+                            'phone': row['phone']
+                        })
+                        if form.is_valid():
+                            form.save()
+                        else:
+                            error_list = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+                            error_message = f"Error in row {index}: " + "; ".join(error_list)
+                            messages.error(request, error_message)
+                    except Exception as e:
+                        messages.error(request, f"Error processing row {row}: {str(e)}")
+                
+                messages.success(request, 'Users have been uploaded successfully!')
+                return redirect('users-upload')
+            except csv.Error as e:
+                messages.error(request, f"CSV file error: {str(e)}")
+    else:
+        form = CSVUsersUploadForm()
+
+    return render(request, 'users/upload_users.html', {'form': form})
 
 @login_required
 @frontoffice_required
@@ -158,3 +208,15 @@ def view_users(request):
         'form' : form
     }
     return render(request, 'users/view_users.html', context)
+
+@login_required
+@frontoffice_required
+def download_sample_csv(request):
+    file_path = os.path.join(settings.MEDIA_ROOT, 'csv', 'sample.csv')
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="sample.csv"'
+            return response
+    else:
+        return HttpResponse('File not found.', status=404)

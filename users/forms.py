@@ -26,6 +26,14 @@ class UserRegisterForm(UserCreationForm):
 
         return user
 
+class CSVUsersUploadForm(forms.Form):
+    TYPE_CHOICES = [
+        ('Reguler', 'Reguler'),
+    ]
+
+    user_type = forms.ChoiceField(choices=TYPE_CHOICES, required=False)
+    csv_file = forms.FileField()
+
 class CustomAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
         if not user.is_active:

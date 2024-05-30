@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.home),
     path('register/', views.register, name='users-register'),
+    path('upload/', views.upload_users, name='users-upload'),
     path('profile/', views.profile, name='users-profile'),
     path('edit/<str:username>', views.edit, name='users-edit'),
     path('detail/<str:username>', views.detail, name='users-detail'),
@@ -15,4 +16,5 @@ urlpatterns = [
     path('parent-assign/', views.assign_parent, name='users-parent-assign'),
     path('student-assign/', views.assign_student, name='users-student-assign'),
     path('view/', views.view_users, name='users-view'),
+    path('download-sample-csv/', views.download_sample_csv, name='download-sample-csv'),
 ]

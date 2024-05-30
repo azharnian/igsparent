@@ -1,0 +1,13 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <form method="post" enctype="multipart/form-data">
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Upload Bulk Users</legend>
+        <small>CSV sample <a href="{% url 'download-sample-csv' %}">here</a>.</small>
+        {% csrf_token %}
+        {{ form|crispy }}
+    </fieldset>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+{% endblock %}

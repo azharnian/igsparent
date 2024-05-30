@@ -99,3 +99,8 @@ body {
   .account-heading {
     font-size: 2.5rem;
   }
+
+  .alert-error {
+    background-color: #e30f0f;
+    color: white;
+  }
